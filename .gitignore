@@ -1,0 +1,6 @@
+//Ignora ejecutables en Windows
+*.exe
+//Ignora archivo objetos (compilacion intermedia)
+*.o
+//Programas ejecutables que crea el compilador (no es el código fuente)
+*.out
