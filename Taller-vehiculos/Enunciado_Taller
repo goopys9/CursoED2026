@@ -1,0 +1,7 @@
+Sistema de Gestión Interactivo "PowerFix Center"
+
+El objetivo es desarrollar un programa en C que controle el flujo de un taller mediante una Cola (FIFO) para el registro de vehículos
+por orden de llegada y una Pila (LIFO) para el inventario de repuestos. La interacción se evidencia al seleccionar la opción "Atender", la cual
+realiza un Dequeue para sacar al primer carro de la fila y un Pop para retirar el repuesto de la cima del estante; si al realizar la atención el estante
+ está vacío, el sistema muestra una alerta y el cliente es despachado inmediatamente sin recibir el servicio por falta de inventario, garantizando así un flujo
+simple y continuo sin retener datos en memoria.
