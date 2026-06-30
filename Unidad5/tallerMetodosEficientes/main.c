@@ -92,14 +92,14 @@ void registrarManualmente() {
     printf("Ingresa el numero de contenedores (max %d): ", MAX_CONTENEDORES);
     scanf("%d", &Ncon);
 
-    if (Ncon < 1 || Ncon > MAX_CONTENEDORES) {
+    if (Ncon < 1 || Ncon > MAX_CONTENEDORES) { // Validación de cantidad
         printf("Cantidad no valida.\n");
-        Ncon = 0;
+        Ncon = 0; // Reiniciar a 0 para evitar datos inconsistentes
         return;
     }
 
-    for (int i = 0; i < Ncon; i++) {
-        printf("Ingrese el peso del contenedor %d (en kg): ", i + 1);
+    for (int i = 0; i < Ncon; i++) { // Registro manual de pesos
+        printf("Ingrese el peso del contenedor %d (en kg): ", i + 1); // REQUISITO: Validar que el peso sea un número entero positivo
         scanf("%d", &pesos[i]);
     }
     
@@ -112,15 +112,15 @@ void generarAleatorio() {
     printf("Ingresa el numero de contenedores a generar (max %d): ", MAX_CONTENEDORES);
     scanf("%d", &Ncon);
 
-    if (Ncon < 1 || Ncon > MAX_CONTENEDORES) {
+    if (Ncon < 1 || Ncon > MAX_CONTENEDORES) { // Validación de cantidad
         printf("Cantidad no valida.\n");
         Ncon = 0;
         return;
     }
 
-    for (int i = 0; i < Ncon; i++) {
+    for (int i = 0; i < Ncon; i++) { // Generación de pesos aleatorios entre 1000 kg y 30000 kg
     
-        pesos[i] = 1000 + rand() % 29001;
+        pesos[i] = 1000 + rand() % 29001; // REQUISITO: Validar que el peso generado sea un número entero positivo dentro del rango especificado
     }
 
     ordenado = 0; // REQUISITO: Cambia a 0 al generar aleatorios
@@ -134,31 +134,30 @@ void mostrarContenedores() {
         return;
     }
 
-    printf("\nEstado actual del arreglo (Bandera Ordenado = %d):\n", ordenado);
-    for (int i = 0; i < Ncon; i++) {
-        printf("[%d]: %d kg\n", i, pesos[i]);
+    printf("\nEstado actual del arreglo (Bandera Ordenado = %d):\n", ordenado); // REQUISITO: Mostrar el estado de la bandera antes de listar los contenedores
+    for (int i = 0; i < Ncon; i++) { // REQUISITO: Mostrar el índice y el peso de cada contenedor
+        printf("[%d]: %d kg\n", i, pesos[i]); // REQUISITO: Mostrar el peso de cada contenedor en kg
     }
     printf("\n");
 }
 
 // 4. METODO 1: HEAPSORT
-void heapify(int n, int i) {
+void heapify(int n, int i) { 
     int mayor = i; 
-    int izq = 2 * i + 1; 
-    int der = 2 * i + 2; 
-
-    if (izq < n && pesos[izq] > pesos[mayor])
+    int izq = 2 * i + 1; // encontrar la posición en memoria de su hijo izquierdo.
+    int der = 2 * i + 2; // encontrar la posición en memoria de su hijo derecho.
+    if (izq < n && pesos[izq] > pesos[mayor]) // Si existe y el hijo izquierdo pesa más que su papá, entonces el izquierdo pasa a ser el nuevo mayor.
         mayor = izq;
 
     if (der < n && pesos[der] > pesos[mayor])
         mayor = der;
 
-    if (mayor != i) {
-        int temp = pesos[i];
-        pesos[i] = pesos[mayor];
-        pesos[mayor] = temp;
+    if (mayor != i) { // REQUISITO: Validar si el nodo actual no es el mayor
+        int temp = pesos[i]; // Intercambiar el peso del nodo actual con el del nodo mayor
+        pesos[i] = pesos[mayor]; // REQUISITO: Realizar el intercambio de pesos
+        pesos[mayor] = temp; //  Completar el intercambio de pesos
 
-        heapify(n, mayor);
+        heapify(n, mayor); // Llamar recursivamente a heapify para asegurar que el subárbol afectado también cumpla la propiedad de heap
     }
 }
 
@@ -168,15 +167,15 @@ void ordenarHeapSort() {
         return;
     }
 
-    for (int i = Ncon / 2 - 1; i >= 0; i--)
-        heapify(Ncon, i);
+    for (int i = Ncon / 2 - 1; i >= 0; i--) // Construir el heap (reorganizar el arreglo)
+        heapify(Ncon, i); // Construir el heap a partir del arreglo de pesos
 
-    for (int i = Ncon - 1; i > 0; i--) {
-        int temp = pesos[0];
-        pesos[0] = pesos[i];
-        pesos[i] = temp;
+    for (int i = Ncon - 1; i > 0; i--) { // Extraer elementos del heap uno por uno
+        int temp = pesos[0]; // Mover el peso actual del nodo raíz al final del arreglo
+        pesos[0] = pesos[i]; // Realizar el intercambio de pesos
+        pesos[i] = temp; // Completar el intercambio de pesos
 
-        heapify(i, 0);
+        heapify(i, 0); 
     }
 
     ordenado = 1; // REQUISITO: Cambia a 1 tras ordenar exitosamente
@@ -186,10 +185,10 @@ void ordenarHeapSort() {
 // 5. METODO 2: QUICKSORT
 void ordenarQuickSort(int bajo, int alto) {
     if (bajo < alto) {
-        int pivote = pesos[alto]; 
-        int i = (bajo - 1);
+        int pivote = pesos[alto]; // Elegir el último elemento como pivote  
+        int i = (bajo - 1); // Índice del elemento más pequeño
 
-        for (int j = bajo; j < alto; j++) {
+        for (int j = bajo; j < alto; j++) { // Recorrer el arreglo desde el índice bajo hasta el alto-1
             if (pesos[j] < pivote) {
                 i++;
                 int temp = pesos[i];
@@ -197,14 +196,14 @@ void ordenarQuickSort(int bajo, int alto) {
                 pesos[j] = temp;
             }
         }
-        int temp = pesos[i + 1];
+        int temp = pesos[i + 1]; // Colocar el pivote en su posición correcta
         pesos[i + 1] = pesos[alto];
-        pesos[alto] = temp;
+        pesos[alto] = temp; // Completar el intercambio de pesos
 
-        int pi = i + 1;
+        int pi = i + 1; 
 
-        ordenarQuickSort(bajo, pi - 1);
-        ordenarQuickSort(pi + 1, alto);
+        ordenarQuickSort(bajo, pi - 1); // Ordenar los elementos por separado antes y después del pivote
+        ordenarQuickSort(pi + 1, alto); 
     }
 }
 
@@ -220,39 +219,39 @@ void iniciarQuickSort() {
 
 // 6. METODO 3: MERGESORT
 void merge(int izq, int medio, int der) {
-    int n1 = medio - izq + 1;
+    int n1 = medio - izq + 1; // Calcular el tamaño de los subarreglos izquierdo y derecho
     int n2 = der - medio;
 
     int L[MAX_CONTENEDORES], R[MAX_CONTENEDORES];
 
-    for (int i = 0; i < n1; i++) L[i] = pesos[izq + i];
-    for (int j = 0; j < n2; j++) R[j] = pesos[medio + 1 + j];
+    for (int i = 0; i < n1; i++) L[i] = pesos[izq + i]; // Copiar los elementos al subarreglo izquierdo L
+    for (int j = 0; j < n2; j++) R[j] = pesos[medio + 1 + j]; 
 
-    int i = 0, j = 0, k = izq;
+    int i = 0, j = 0, k = izq; // Índices iniciales para subarreglos izquierdo y derecho
     while (i < n1 && j < n2) {
         if (L[i] <= R[j]) {
             pesos[k] = L[i];
             i++;
-        } else {
+        } else { // Comparar los elementos de los subarreglos y colocar el menor en el arreglo original
             pesos[k] = R[j];
             j++;
         }
         k++;
     }
 
-    while (i < n1) {
+    while (i < n1) { // Copiar los elementos restantes del subarreglo izquierdo, si los hay
         pesos[k] = L[i];
         i++;
         k++;
     }
-    while (j < n2) {
+    while (j < n2) { // Copiar los elementos restantes del subarreglo derecho, si los hay
         pesos[k] = R[j];
         j++;
         k++;
     }
 }
 
-void ordenarMergeSort(int izq, int der) {
+void ordenarMergeSort(int izq, int der) { // Función recursiva para dividir el arreglo y ordenar
     if (izq < der) {
         int medio = izq + (der - izq) / 2;
         ordenarMergeSort(izq, medio);
