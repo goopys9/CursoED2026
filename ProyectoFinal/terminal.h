@@ -68,3 +68,21 @@ void consultarPasajero();
 void mostrarTodosDestinos();
 void mostrarEstadisticas();
 void liberarSistema();
+
+Destino *buscarDestinoPorCodigo(int codigo);
+void agregarDestino(Destino *nuevoDestino);
+void mostrarDestino(Destino *destino);
+void mostrarColaPasajeros(ColaPasajeros *cola);
+int contarPasajerosEspera(ColaPasajeros *cola);
+int verificarColaVacia(ColaPasajeros *cola);
+void encolarPasajero(ColaPasajeros *cola, NodoPasajero *nuevo);
+NodoPasajero *desencolarPasajero(ColaPasajeros *cola);
+NodoPasajero *consultarPrimerPasajero(ColaPasajeros *cola);
+void liberarColaPasajeros(ColaPasajeros *cola);
+
+NodoViaje *insertarViajeEnArbol(NodoViaje *raiz, int codigo, int capacidad);
+NodoViaje *buscarViajeEnArbol(NodoViaje *raiz, int codigo);
+void mostrarViajesEnOrden(NodoViaje *raiz);
+void liberarArbolViajes(NodoViaje *raiz);
+
+#endif
