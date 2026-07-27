@@ -149,3 +149,104 @@ void registrarDestino() {
         printf("No se pudo reservar memoria.\n");
         return;
     }
+    
+    // Solicita y lee el código numérico del nuevo destino
+    printf("\nIngrese codigo del destino: ");
+    scanf("%d", &nuevoDestino->codigo);
+    limpiarEntrada();
+
+    // Verifica duplicado: si ya existe un destino con ese código, aborta
+    if (buscarDestinoPorCodigo(nuevoDestino->codigo) != NULL) {
+        printf("El codigo ya existe.\n");
+        free(nuevoDestino); // libera memoria asignada antes de salir
+        return;
+    }
+
+    // Lee el nombre del destino (cadena) y remueve el '\n' final
+    printf("Ingrese nombre del destino: ");
+    fgets(nuevoDestino->nombre, MAX_NOMBRE, stdin);
+    nuevoDestino->nombre[strcspn(nuevoDestino->nombre, "\n")] = '\0';
+
+    // Lee el nombre de la empresa responsable del destino
+    printf("Ingrese nombre de la empresa: ");
+    fgets(nuevoDestino->empresa, MAX_NOMBRE, stdin);
+    nuevoDestino->empresa[strcspn(nuevoDestino->empresa, "\n")] = '\0';
+
+    // Inicializa la cola de pasajeros y punteros de árbol/lista asociados
+    nuevoDestino->cola.frente = NULL;
+    nuevoDestino->cola.final = NULL;
+    nuevoDestino->cola.cantidad = 0;
+    nuevoDestino->raizViajes = NULL; // raíz del árbol de viajes (si aplica)
+    nuevoDestino->siguiente = NULL;  // enlace para la lista de destinos
+
+    // Inserta el destino en la estructura global y confirma al usuario
+    agregarDestino(nuevoDestino);
+    printf("Destino registrado correctamente.\n");
+}
+
+void registrarPasajero() {
+    int codigoDestino;
+    int documento;
+    int tipoDocumento;
+
+    // Solicita el código del destino donde se registrará el pasajero
+    printf("\nIngrese codigo del destino: ");
+    scanf("%d", &codigoDestino);
+    limpiarEntrada();
+
+    // Busca el destino por código; si no existe, informa y sale
+    Destino *destino = buscarDestinoPorCodigo(codigoDestino);
+    if (destino == NULL) {
+        printf("Destino no encontrado.\n");
+        return;
+    }
+
+    // Solicita y lee el número de documento del pasajero
+    printf("Ingrese numero de documento: ");
+    scanf("%d", &documento);
+    limpiarEntrada();
+
+    // Muestra opciones para el tipo de documento y lee la elección
+    printf("Seleccione tipo de documento:\n");
+    printf("1. Cedula de Ciudadania\n");
+    printf("2. Pasaporte\n");
+    printf("3. Tarjeta de Identidad\n");
+    scanf("%d", &tipoDocumento);
+    limpiarEntrada();
+
+    // Valida que el tipo de documento esté dentro de las constantes permitidas
+    if (!documentoValido(tipoDocumento)) {
+        printf("Tipo de documento no permitido.\n");
+        return;
+    }
+
+    // Verifica que el pasajero no esté ya registrado en otra cola
+    if (existePasajeroEnSistema(documento)) {
+        printf("El pasajero ya existe en otra cola.\n");
+        return;
+    }
+
+    // Reserva memoria para el nuevo nodo de pasajero
+    NodoPasajero *nuevoPasajero = (NodoPasajero *) malloc(sizeof(NodoPasajero));
+    if (nuevoPasajero == NULL) {
+        printf("No se pudo reservar memoria.\n");
+        return;
+    }
+
+    // Inicializa los campos del nuevo pasajero antes de encolarlo
+    nuevoPasajero->documento = documento;
+    nuevoPasajero->tipoDocumento = (TipoDocumento) tipoDocumento;
+    nuevoPasajero->estado = ESTADO_ESPERA;
+    nuevoPasajero->siguiente = NULL;
+
+    // Encola el pasajero en la cola del destino y actualiza el contador global
+    encolarPasajero(&destino->cola, nuevoPasajero);
+    totalPasajerosRegistrados++;
+    printf("Pasajero registrado en la fila del destino.\n");
+}
+
+void mostrarPasajerosPorDestino() {
+    int codigoDestino;
+    printf("\nIngrese codigo del destino: ");
+    scanf("%d", &codigoDestino);
+    limpiarEntrada();
