@@ -30,3 +30,41 @@ typedef struct ColaPasajeros {
     NodoPasajero *final;
     int cantidad;
 } ColaPasajeros;
+
+typedef struct NodoViaje {
+    int codigo;
+    int capacidad;
+    int altura;
+    int pasajerosEmbarcados;
+    struct NodoViaje *izq;
+    struct NodoViaje *der;
+} NodoViaje;
+
+typedef struct Destino {
+    int codigo;
+    char nombre[MAX_NOMBRE];
+    char empresa[MAX_NOMBRE];
+    ColaPasajeros cola;
+    NodoViaje *raizViajes;
+    struct Destino *siguiente;
+} Destino;
+
+extern Destino *inicioDestinos;
+extern int totalPasajerosRegistrados;
+extern int totalPasajerosEmbarcados;
+extern int totalDestinos;
+
+void inicializarSistema();
+void mostrarMenu();
+void limpiarEntrada();
+void registrarDestino();
+void registrarPasajero();
+void mostrarPasajerosPorDestino();
+void registrarViaje();
+void buscarViaje();
+void mostrarArbolViajes();
+void realizarEmbarque();
+void consultarPasajero();
+void mostrarTodosDestinos();
+void mostrarEstadisticas();
+void liberarSistema();
