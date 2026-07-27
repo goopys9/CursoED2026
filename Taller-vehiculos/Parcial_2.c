@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
+prueba de subida
 // DEFINICIÓN DE CONSTANTES Y ESTRUCTURAS
 #define MAX_PLACA    20    // Tamaño máximo del texto de la placa
 #define MAX_SERVICIO 100   // Tamaño máximo del texto del servicio
