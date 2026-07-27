@@ -250,3 +250,120 @@ void mostrarPasajerosPorDestino() {
     printf("\nIngrese codigo del destino: ");
     scanf("%d", &codigoDestino);
     limpiarEntrada();
+
+    // ============================================================================
+// MOSTRAR PASAJEROS EN COLA DE ESPERA
+// Explicación para sustentación:
+// Recorre la cola (FIFO) de un destino específico sin modificarla para 
+// listar a los pasajeros que están esperando su viaje.
+// ============================================================================
+    Destino *destino = buscarDestinoPorCodigo(codigoDestino);
+    if (destino == NULL) {
+        printf("Destino no encontrado.\n");
+        return;
+    }
+
+    printf("\nPasajeros del destino %s:\n", destino->nombre);
+    // Validación previa: evita intentar recorrer una cola sin elementos
+    if (verificarColaVacia(&destino->cola)) {
+        printf("No hay pasajeros en espera.\n");
+        return;
+    }
+
+    // Recorregordo lineal de la lista enlazada interna de la cola (desde el frente hasta el final)
+    NodoPasajero *actual = destino->cola.frente;
+    while (actual != NULL) {
+        // Uso del operador ternario para mostrar una etiqueta legible según el enum/constante de estado
+        printf("Documento: %d | Estado: %s\n", actual->documento,
+               actual->estado == ESTADO_ESPERA ? "En espera" : "Embarcado");
+        actual = actual->siguiente;
+    }
+}
+
+// ============================================================================
+// REALIZAR EMBARQUE DE UN PASAJERO
+// Explicación para sustentación:
+// Mueve al primer pasajero de la cola (FIFO) hacia su viaje asignado en el árbol de viajes.
+// Aplica desencolado, actualización de estadísticas globales/locales y liberación de memoria.
+// ============================================================================
+void realizarEmbarque() {
+    int codigoDestino;
+    int codigoViaje;
+
+    printf("\nIngrese codigo del destino: ");
+    scanf("%d", &codigoDestino);
+    limpiarEntrada(); // Limpia el buffer para evitar saltos de línea pendientes en el teclado
+
+    // 1. Búsqueda y validación del destino
+    Destino *destino = buscarDestinoPorCodigo(codigoDestino);
+    if (destino == NULL) {
+        printf("Destino no encontrado.\n");
+        return;
+    }
+
+    // 2. Verificar que haya al menos un pasajero en la cola de este destino
+    if (verificarColaVacia(&destino->cola)) {
+        printf("No hay pasajeros en espera.\n");
+        return;
+    }
+
+    printf("Ingrese codigo del viaje: ");
+    scanf("%d", &codigoViaje);
+    limpiarEntrada();
+
+    // 3. Búsqueda del viaje dentro de la estructura jerárquica (Árbol Binario de Búsqueda)
+    NodoViaje *viaje = buscarViajeEnArbol(destino->raizViajes, codigoViaje);
+    if (viaje == NULL) {
+        printf("No existe un viaje programado con ese codigo.\n");
+        return;
+    }
+
+    // 4. Operación FIFO: Sacamos al primer pasajero que llegó a la cola
+    NodoPasajero *pasajero = desencolarPasajero(&destino->cola);
+    if (pasajero == NULL) {
+        printf("No fue posible embarcar.\n");
+        return;
+    }
+
+    // 5. Actualización de estado y contadores de control
+    pasajero->estado = ESTADO_EMBARCADO;
+    viaje->pasajerosEmbarcados++;        // Contador por viaje específico
+    totalPasajerosEmbarcados++;          // Contador global del sistema
+
+    // 6. Liberación de memoria dinámica (malloc previo al encolar) para evitar memory leaks
+    free(pasajero);
+    printf("Pasajero embarcado correctamente.\n");
+}
+
+// ============================================================================
+// CONSULTAR PASAJERO POR DOCUMENTO
+// Explicación para sustentación:
+// Realiza una búsqueda anidada: recorre la lista de destinos y, por cada destino,
+// busca el número de documento en su respectiva cola de pasajeros.
+// Complejidad: O(D * P) donde D = número de destinos y P = pasajeros por cola.
+// ============================================================================
+void consultarPasajero() {
+    int documento;
+    printf("\nIngrese numero de documento: ");
+    scanf("%d", &documento);
+    limpiarEntrada();
+
+    // Recorrido de la lista principal de destinos (nivel exterior)
+    Destino *actual = inicioDestinos;
+    while (actual != NULL) {
+        
+        // Recorrido de la cola de pasajeros del destino actual (nivel interior)
+        NodoPasajero *aux = actual->cola.frente;
+        while (aux != NULL) {
+            if (aux->documento == documento) {
+                printf("Pasajero encontrado en el destino %s.\n", actual->nombre);
+                printf("Estado: %s\n", aux->estado == ESTADO_ESPERA ? "En espera" : "Embarcado");
+                return; // Corta la función en cuanto encuentra la primera coincidencia
+            }
+            aux = aux->siguiente;
+        }
+        actual = actual->siguiente; // Pasa al siguiente destino
+    }
+
+    printf("No se encontro el pasajero.\n");
+}
