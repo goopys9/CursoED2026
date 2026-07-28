@@ -166,4 +166,62 @@ void mostrarEstadisticas() {
     // Variables para comparar cantidades
     int mayorEspera = -1;
     int menorEspera = -1;
+
+    // Verifica si existe al menos un destino para analizar
+    if (actual == NULL) {
+        // Si no hay datos, se informa al usuario y se termina la función
+        printf("No hay datos para mostrar.\n");
+        return;
+    }
+
+    // Recorre todos los destinos para acumular las estadísticas generales
+    while (actual != NULL) {
+        // Suma la cantidad de pasajeros en espera del destino actual
+        totalEspera += actual->cola.cantidad;
+
+        // Busca el destino con mayor cantidad de pasajeros en espera
+        if (mayorEspera == -1 || actual->cola.cantidad > mayorEspera) {
+            mayorEspera = actual->cola.cantidad;
+            destinoMayor = actual;
+        }
+
+        // Busca el destino con menor cantidad de pasajeros en espera
+        if (menorEspera == -1 || actual->cola.cantidad < menorEspera) {
+            menorEspera = actual->cola.cantidad;
+            destinoMenor = actual;
+        }
+
+        // Recorre los viajes del árbol de cada destino para sumar el total de viajes
+        NodoViaje *raiz = actual->raizViajes;
+        while (raiz != NULL) {
+            totalViajes++;
+            totalEmbarcadosPorViaje += raiz->pasajerosEmbarcados;
+            raiz = raiz->der;
+        }
+
+        // Continúa con el siguiente destino de la lista
+        actual = actual->siguiente;
+    }
+
+    // Muestra las estadísticas acumuladas en pantalla
+    printf("\n==== ESTADISTICAS ====\n");
+    printf("Total de destinos: %d\n", totalDestinos);
+    printf("Total de pasajeros registrados: %d\n", totalPasajerosRegistrados);
+    printf("Total de pasajeros embarcados: %d\n", totalPasajerosEmbarcados);
+    if (totalDestinos > 0) {
+        printf("Promedio de pasajeros en espera por destino: %.2f\n", (float) totalEspera / totalDestinos);
+    } else {
+        printf("Promedio de pasajeros en espera por destino: 0.00\n");
+    }
+    if (totalViajes > 0) {
+        printf("Promedio de pasajeros embarcados por viaje: %.2f\n", (float) totalEmbarcadosPorViaje / totalViajes);
+    } else {
+        printf("Promedio de pasajeros embarcados por viaje: 0.00\n");
+    }
+    if (destinoMayor != NULL) {
+        printf("Destino con mayor espera: %s (%d)\n", destinoMayor->nombre, mayorEspera);
+    }
+    if (destinoMenor != NULL) {
+        printf("Destino con menor espera: %s (%d)\n", destinoMenor->nombre, menorEspera);
+    }
 }
