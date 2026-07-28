@@ -109,4 +109,54 @@ void mostrarTodosDestinos();
 void mostrarEstadisticas();
 
 // Libera toda la memoria dinámica utilizada por el sistema
-void liberarSistema();
+void liberarSistema(); 
+// Busca un destino por su código y devuelve un puntero al destino encontrado.
+// Si no existe, normalmente devuelve NULL.
+Destino *buscarDestinoPorCodigo(int codigo);
+
+// Agrega un nuevo destino a la estructura donde se almacenan los destinos.
+void agregarDestino(Destino *nuevoDestino);
+
+// Muestra en pantalla la información de un destino.
+void mostrarDestino(Destino *destino);
+
+// Muestra todos los pasajeros que se encuentran en la cola de espera.
+void mostrarColaPasajeros(ColaPasajeros *cola);
+
+// Cuenta y devuelve la cantidad de pasajeros que hay en la cola.
+int contarPasajerosEspera(ColaPasajeros *cola);
+
+// Verifica si la cola está vacía.
+// Devuelve 1 si está vacía y 0 si contiene pasajeros (según la implementación).
+int verificarColaVacia(ColaPasajeros *cola);
+
+// Agrega un nuevo pasajero al final de la cola (encolar).
+void encolarPasajero(ColaPasajeros *cola, NodoPasajero *nuevo);
+
+// Elimina y devuelve el primer pasajero de la cola (desencolar).
+// Si la cola está vacía, normalmente devuelve NULL.
+NodoPasajero *desencolarPasajero(ColaPasajeros *cola);
+
+// Devuelve el primer pasajero de la cola sin eliminarlo.
+// Si la cola está vacía, devuelve NULL.
+NodoPasajero *consultarPrimerPasajero(ColaPasajeros *cola);
+
+// Libera toda la memoria utilizada por la cola de pasajeros.
+void liberarColaPasajeros(ColaPasajeros *cola);
+
+// Inserta un nuevo viaje en el árbol binario de búsqueda utilizando su código.
+// También almacena la capacidad del viaje.
+// Devuelve la nueva raíz del árbol.
+NodoViaje *insertarViajeEnArbol(NodoViaje *raiz, int codigo, int capacidad);
+
+// Busca un viaje por su código dentro del árbol.
+// Devuelve un puntero al viaje si existe o NULL en caso contrario.
+NodoViaje *buscarViajeEnArbol(NodoViaje *raiz, int codigo);
+
+// Recorre el árbol en orden (inorden) y muestra todos los viajes.
+void mostrarViajesEnOrden(NodoViaje *raiz);
+
+// Libera toda la memoria ocupada por el árbol de viajes.
+void liberarArbolViajes(NodoViaje *raiz);
+
+#endif  // Fin del archivo de cabecera (header guard)
