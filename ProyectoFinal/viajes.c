@@ -246,4 +246,77 @@ void registrarViaje() {
 
     // Limpia el buffer del teclado
     limpiarEntrada();
+
+
+    Destino *destino = buscarDestinoPorCodigo(codigoDestino);
+    if (destino == NULL) {
+        printf("Destino no encontrado.\n");
+        return;
+    }
+
+    printf("Ingrese codigo del viaje: ");
+    scanf("%d", &codigoViaje);
+    limpiarEntrada();
+
+    printf("Ingrese capacidad maxima: ");
+    scanf("%d", &capacidad);
+    limpiarEntrada();
+
+    if (buscarViajeEnArbol(destino->raizViajes, codigoViaje) != NULL) {
+        printf("El codigo del viaje ya existe.\n");
+        return;
+    }
+
+    destino->raizViajes = insertarViajeEnArbol(destino->raizViajes, codigoViaje, capacidad);
+    if (destino->raizViajes != NULL) {
+        printf("Viaje registrado correctamente.\n");
+    }
+}
+
+void buscarViaje() {
+    int codigoDestino;
+    int codigoViaje;
+
+    printf("\nIngrese codigo del destino: ");
+    scanf("%d", &codigoDestino);
+    limpiarEntrada();
+
+    Destino *destino = buscarDestinoPorCodigo(codigoDestino);
+    if (destino == NULL) {
+        printf("Destino no encontrado.\n");
+        return;
+    }
+
+    printf("Ingrese codigo del viaje: ");
+    scanf("%d", &codigoViaje);
+    limpiarEntrada();
+
+    NodoViaje *viaje = buscarViajeEnArbol(destino->raizViajes, codigoViaje);
+    if (viaje == NULL) {
+        printf("Viaje no encontrado.\n");
+    } else {
+        printf("Viaje encontrado. Capacidad: %d | Embarcados: %d\n",
+               viaje->capacidad, viaje->pasajerosEmbarcados);
+    }
+}
+
+void mostrarArbolViajes() {
+    int codigoDestino;
+    printf("\nIngrese codigo del destino: ");
+    scanf("%d", &codigoDestino);
+    limpiarEntrada();
+
+    Destino *destino = buscarDestinoPorCodigo(codigoDestino);
+    if (destino == NULL) {
+        printf("Destino no encontrado.\n");
+        return;
+    }
+
+    if (destino->raizViajes == NULL) {
+        printf("No hay viajes programados para este destino.\n");
+        return;
+    }
+
+    printf("\nViajes programados del destino %s:\n", destino->nombre);
+    mostrarViajesEnOrden(destino->raizViajes);
 }
