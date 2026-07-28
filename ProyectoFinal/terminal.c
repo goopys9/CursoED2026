@@ -76,3 +76,94 @@ void agregarDestino(Destino *nuevoDestino) {
     totalDestinos++;
 }
 
+// Muestra la información de un destino
+void mostrarDestino(Destino *destino) {
+    // Verifica que el destino exista
+    if (destino == NULL) {
+        return;
+    }
+
+    // Imprime los datos del destino
+    printf("Codigo: %d\n", destino->codigo);
+    printf("Nombre: %s\n", destino->nombre);
+    printf("Empresa: %s\n", destino->empresa);
+    printf("Pasajeros en espera: %d\n", destino->cola.cantidad);
+
+    // Verifica si el destino tiene viajes registrados
+    printf("Viajes registrados: ");
+    if (destino->raizViajes == NULL) {
+        printf("No hay viajes\n");
+    } else {
+        printf("Si\n");
+    }
+
+    // Línea separadora
+    printf("-------------------------------\n");
+}
+
+// Muestra todos los destinos registrados
+void mostrarTodosDestinos() {
+    Destino *actual = inicioDestinos;
+
+    // Verifica si no hay destinos
+    if (actual == NULL) {
+        printf("No hay destinos registrados.\n");
+        return;
+    }
+
+    printf("\nDestinos registrados:\n");
+
+    // Recorre la lista de destinos y los muestra
+    while (actual != NULL) {
+        mostrarDestino(actual);
+        actual = actual->siguiente;
+    }
+}
+
+// Libera toda la memoria utilizada por el sistema
+void liberarSistema() {
+    Destino *actual = inicioDestinos;
+
+    // Recorre la lista de destinos
+    while (actual != NULL) {
+        // Guarda el siguiente destino antes de liberar el actual
+        Destino *siguiente = actual->siguiente;
+
+        // Libera la cola de pasajeros
+        liberarColaPasajeros(&actual->cola);
+
+        // Libera el árbol de viajes
+        liberarArbolViajes(actual->raizViajes);
+
+        // Libera la memoria del destino
+        free(actual);
+
+        // Continúa con el siguiente destino
+        actual = siguiente;
+    }
+
+    // Reinicia las variables globales
+    inicioDestinos = NULL;
+    totalPasajerosRegistrados = 0;
+    totalPasajerosEmbarcados = 0;
+    totalDestinos = 0;
+}
+
+// Calcula y muestra las estadísticas del sistema
+void mostrarEstadisticas() {
+    // Empieza el recorrido desde el primer destino
+    Destino *actual = inicioDestinos;
+
+    // Variables para almacenar las estadísticas
+    int totalEspera = 0;
+    int totalViajes = 0;
+    int totalEmbarcadosPorViaje = 0;
+
+    // Guardan el destino con más y menos pasajeros en espera
+    Destino *destinoMayor = NULL;
+    Destino *destinoMenor = NULL;
+
+    // Variables para comparar cantidades
+    int mayorEspera = -1;
+    int menorEspera = -1;
+}
