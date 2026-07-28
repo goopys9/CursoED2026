@@ -232,7 +232,7 @@ void liberarArbolViajes(NodoViaje *raiz) {
     free(raiz);
 }
 
-// Función para registrar un nuevo viaje
+// Función para registrar un nuevo viaje en el árbol del destino seleccionado
 void registrarViaje() {
 
     // Variables para guardar los datos ingresados por el usuario
@@ -240,20 +240,21 @@ void registrarViaje() {
     int codigoViaje;
     int capacidad;
 
-    // Solicita el código del destino
+    // Solicita el código del destino al que se le agregará el viaje
     printf("\nIngrese codigo del destino: ");
     scanf("%d", &codigoDestino);
 
-    // Limpia el buffer del teclado
+    // Limpia el buffer del teclado para evitar problemas con entradas posteriores
     limpiarEntrada();
 
-
+    // Busca el destino en la lista principal
     Destino *destino = buscarDestinoPorCodigo(codigoDestino);
     if (destino == NULL) {
         printf("Destino no encontrado.\n");
         return;
     }
 
+    // Solicita el código del viaje y su capacidad máxima
     printf("Ingrese codigo del viaje: ");
     scanf("%d", &codigoViaje);
     limpiarEntrada();
@@ -262,35 +263,42 @@ void registrarViaje() {
     scanf("%d", &capacidad);
     limpiarEntrada();
 
+    // Verifica si el código del viaje ya existe en el árbol del destino
     if (buscarViajeEnArbol(destino->raizViajes, codigoViaje) != NULL) {
         printf("El codigo del viaje ya existe.\n");
         return;
     }
 
+    // Inserta el viaje en el árbol AVL del destino
     destino->raizViajes = insertarViajeEnArbol(destino->raizViajes, codigoViaje, capacidad);
     if (destino->raizViajes != NULL) {
         printf("Viaje registrado correctamente.\n");
     }
 }
 
+// Busca y muestra la información de un viaje dentro de un destino
 void buscarViaje() {
     int codigoDestino;
     int codigoViaje;
 
+    // Solicita el código del destino donde se buscará el viaje
     printf("\nIngrese codigo del destino: ");
     scanf("%d", &codigoDestino);
     limpiarEntrada();
 
+    // Busca el destino en la lista principal
     Destino *destino = buscarDestinoPorCodigo(codigoDestino);
     if (destino == NULL) {
         printf("Destino no encontrado.\n");
         return;
     }
 
+    // Solicita el código del viaje a buscar
     printf("Ingrese codigo del viaje: ");
     scanf("%d", &codigoViaje);
     limpiarEntrada();
 
+    // Busca el viaje en el árbol AVL del destino
     NodoViaje *viaje = buscarViajeEnArbol(destino->raizViajes, codigoViaje);
     if (viaje == NULL) {
         printf("Viaje no encontrado.\n");
@@ -300,23 +308,29 @@ void buscarViaje() {
     }
 }
 
+// Muestra todos los viajes registrados en un destino en orden ascendente
 void mostrarArbolViajes() {
     int codigoDestino;
+
+    // Solicita el código del destino a consultar
     printf("\nIngrese codigo del destino: ");
     scanf("%d", &codigoDestino);
     limpiarEntrada();
 
+    // Busca el destino en la lista principal
     Destino *destino = buscarDestinoPorCodigo(codigoDestino);
     if (destino == NULL) {
         printf("Destino no encontrado.\n");
         return;
     }
 
+    // Verifica si el destino tiene viajes registrados
     if (destino->raizViajes == NULL) {
         printf("No hay viajes programados para este destino.\n");
         return;
     }
 
+    // Muestra los viajes en recorrido en orden
     printf("\nViajes programados del destino %s:\n", destino->nombre);
     mostrarViajesEnOrden(destino->raizViajes);
 }
