@@ -132,3 +132,118 @@ static NodoViaje *balancearArbol(NodoViaje *nodo) {
     // Si no hay desbalance, el nodo no requiere cambios y se retorna tal cual
     return nodo;
 }
+
+// Inserta un nuevo viaje en el árbol AVL
+NodoViaje *insertarViajeEnArbol(NodoViaje *raiz, int codigo, int capacidad) {
+
+    // Si el árbol está vacío, crea el primer nodo
+    if (raiz == NULL) {
+        NodoViaje *nuevo = (NodoViaje *) malloc(sizeof(NodoViaje));
+
+        // Verifica si la memoria se reservó correctamente
+        if (nuevo == NULL) {
+            printf("No se pudo reservar memoria.\n");
+            return NULL;
+        }
+
+        // Inicializa los datos del nuevo viaje
+        nuevo->codigo = codigo;
+        nuevo->capacidad = capacidad;
+        nuevo->altura = 1;
+        nuevo->pasajerosEmbarcados = 0;
+        nuevo->izq = NULL;
+        nuevo->der = NULL;
+
+        return nuevo;
+    }
+
+    // Si el código es menor, lo inserta en el subárbol izquierdo
+    if (codigo < raiz->codigo) {
+        raiz->izq = insertarViajeEnArbol(raiz->izq, codigo, capacidad);
+
+    // Si el código es mayor, lo inserta en el subárbol derecho
+    } else if (codigo > raiz->codigo) {
+        raiz->der = insertarViajeEnArbol(raiz->der, codigo, capacidad);
+
+    // Si el código ya existe, no permite duplicados
+    } else {
+        printf("El codigo del viaje ya existe.\n");
+        return raiz;
+    }
+
+    // Balancea el árbol para mantener el AVL organizado
+    return balancearArbol(raiz);
+}
+
+// Busca un viaje por su código dentro del árbol
+NodoViaje *buscarViajeEnArbol(NodoViaje *raiz, int codigo) {
+
+    // Si no existe el nodo, retorna NULL
+    if (raiz == NULL) {
+        return NULL;
+    }
+
+    // Si encuentra el código, devuelve el nodo
+    if (codigo == raiz->codigo) {
+        return raiz;
+    }
+
+    // Busca en el subárbol izquierdo
+    if (codigo < raiz->codigo) {
+        return buscarViajeEnArbol(raiz->izq, codigo);
+    }
+
+    // Busca en el subárbol derecho
+    return buscarViajeEnArbol(raiz->der, codigo);
+}
+
+// Muestra todos los viajes en orden ascendente por código
+void mostrarViajesEnOrden(NodoViaje *raiz) {
+
+    // Si el árbol está vacío, termina
+    if (raiz == NULL) {
+        return;
+    }
+
+    // Recorre primero la izquierda
+    mostrarViajesEnOrden(raiz->izq);
+
+    // Muestra la información del viaje actual
+    printf("Codigo: %d | Capacidad: %d | Embarcados: %d\n",
+           raiz->codigo, raiz->capacidad, raiz->pasajerosEmbarcados);
+
+    // Recorre el subárbol derecho
+    mostrarViajesEnOrden(raiz->der);
+}
+
+// Libera toda la memoria ocupada por el árbol de viajes
+void liberarArbolViajes(NodoViaje *raiz) {
+
+    // Si no hay nodos, termina
+    if (raiz == NULL) {
+        return;
+    }
+
+    // Libera primero los hijos
+    liberarArbolViajes(raiz->izq);
+    liberarArbolViajes(raiz->der);
+
+    // Libera el nodo actual
+    free(raiz);
+}
+
+// Función para registrar un nuevo viaje
+void registrarViaje() {
+
+    // Variables para guardar los datos ingresados por el usuario
+    int codigoDestino;
+    int codigoViaje;
+    int capacidad;
+
+    // Solicita el código del destino
+    printf("\nIngrese codigo del destino: ");
+    scanf("%d", &codigoDestino);
+
+    // Limpia el buffer del teclado
+    limpiarEntrada();
+}
